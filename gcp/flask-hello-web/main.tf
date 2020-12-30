@@ -48,10 +48,27 @@ resource "google_compute_instance" "vm_instance" {
   }
   metadata_startup_script = file("./start.sh")
   metadata = {
-    sshKeys = "jaja:${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "${var.SSHuser}:${var.SSHkey.mac}"
   }
 }
 
 output "ip" {
   value = google_compute_instance.vm_instance.network_interface.0.access_config.0.nat_ip
+}
+
+output "SSHuser" {
+  value = var.SSHuser
+}
+
+variable "SSHuser" {
+  type    = string
+  default = "jaja"
+}
+
+variable "SSHkey" {
+  type = object({
+    mac = string
+    wsl = string
+  })
+  sensitive = true
 }
